@@ -1,11 +1,12 @@
 package com.VGS.service;
 
+import com.VGS.App;
 import com.VGS.model.Game;
 import com.VGS.repository.Gamerepository;
 
+import java.io.File;
 import java.util.List;
 import java.util.Scanner;
-import java.io.File;
 
 public class GameService {
 
@@ -15,88 +16,100 @@ public class GameService {
         this.repository = repository;
     }
 
-    public Game addGame(Game game) {
+    // Add a game safely
+    public boolean addGame(Game game) {
         return repository.addGame(game);
     }
 
-    public boolean removeGame(int id) {
+    // Remove a game by ID
+    public boolean removeGame(long id) {
         return repository.removeGame(id);
     }
 
+    // View all games
     public List<Game> viewAllGames() {
         return repository.getAllGames();
     }
 
-    public Game updateGame(int id, String title, String genre, String platform) {
-
+    // Update existing game
+    public boolean updateGame(long id, String title, String genre, String platform) {
         Game game = repository.findGame(id);
+        if (game == null) return false;
 
-        if (game == null) {
-            return null;
-        }
+        game.setTitle(title);
+        game.setGenre(genre);
+        game.setPlatform(platform);
 
-        Game updatedGame = new Game(
-                id,
-                title,
-                genre,
-                platform,
-                game.isCompleted()
-        );
-
-        repository.removeGame(id);
-        repository.addGame(updatedGame);
-
-        return updatedGame;
+        return true;
     }
 
-    public Game trackCompletion(int id) {
-
+    // Track completion
+    public Game trackCompletion(long id) {
         Game game = repository.findGame(id);
-
         if (game != null) {
             game.setCompleted(true);
         }
-
         return game;
     }
 
-    /*
-    Loads games from a text file and adds them to the repository
-    */
+    // Find game by ID
+    public Game findGame(long id) {
+        return repository.findGame(id);
+    }
 
+    // Load games from file
     public int loadGamesFromFile(String fileName) {
-
         int count = 0;
+        Scanner fileScanner = null;
 
         try {
+            File file = new File(fileName);
 
-            Scanner fileScanner = new Scanner(new File(fileName));
+            if (file.exists()) {
+                fileScanner = new Scanner(file);
+            } else if (App.class.getClassLoader().getResource(fileName) != null) {
+                fileScanner = new Scanner(App.class.getClassLoader().getResourceAsStream(fileName));
+            } else {
+                System.out.println("File not found: " + fileName);
+                return 0;
+            }
 
             while (fileScanner.hasNextLine()) {
 
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(",");
 
-                int id = Integer.parseInt(parts[0]);
-                String title = parts[1];
-                String genre = parts[2];
-                String platform = parts[3];
-                boolean completed = Boolean.parseBoolean(parts[4]);
+                if (parts.length < 5) continue;
 
-                Game game = new Game(id, title, genre, platform, completed);
+                try {
 
-                repository.addGame(game);
+                    long id = Long.parseLong(parts[0].trim());
+                    String title = parts[1].trim();
+                    String genre = parts[2].trim();
+                    String platform = parts[3].trim();
+                    boolean completed = Boolean.parseBoolean(parts[4].trim());
 
-                count++;
+                    if (title.isBlank()) continue;
+                    if (!genre.matches("[a-zA-Z ]+")) continue;
+                    if (platform.isBlank()) continue;
+                    if (id <= 0) continue;
+
+                    Game game = new Game(id, title, genre, platform, completed);
+
+                    if (repository.addGame(game)) {
+                        count++;
+                    }
+
+                } catch (Exception ignored) {}
+
             }
-
-            fileScanner.close();
 
         } catch (Exception e) {
             System.out.println("Error loading file: " + e.getMessage());
+        } finally {
+            if (fileScanner != null) fileScanner.close();
         }
 
         return count;
     }
 }
-

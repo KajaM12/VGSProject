@@ -8,31 +8,29 @@ public class Gamerepository {
 
     private List<Game> games = new ArrayList<>();
 
-    public Game addGame(Game game) {
+    // Add game only if ID is unique
+    public boolean addGame(Game game) {
+        if (game == null || findGame(game.getId()) != null) {
+            // Null game or duplicate ID
+            return false;
+        }
         games.add(game);
-        return game;
+        return true;
     }
 
-    public boolean removeGame(int id) {
-
+    public boolean removeGame(long id) {
         Game game = findGame(id);
-
         if (game != null) {
             games.remove(game);
             return true;
         }
-
         return false;
     }
 
-    public Game findGame(int id) {
-
+    public Game findGame(long id) {
         for (Game game : games) {
-            if (game.getId() == id) {
-                return game;
-            }
+            if (game.getId() == id) return game;
         }
-
         return null;
     }
 

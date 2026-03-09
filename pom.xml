@@ -23,7 +23,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.kajamoore.Main</mainClass>
+                            <mainClass>com.VGS.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
