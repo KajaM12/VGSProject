@@ -11,6 +11,8 @@
  * validating input and maintaining organized, accurate information of the collection.
  */
 
+ // Video Link: https://youtu.be/3PdzgcXUtBs
+ // GitHubLink: https://github.com/KajaM12/VGSProject.git
 package com.VGS;
 
 import com.VGS.model.Game;
