@@ -1,3 +1,16 @@
+/**
+ * Kaja Moore
+ * CEN 3024C Software Development I
+ * 03/08/2026
+ * VideoGameCollection.java
+ *
+ * Class Name: Phase 1
+ *
+ * The Video Game Collection System allows users to manage their personal video game library.
+ * It enables adding, removing, updating, viewing, and tracking completion of games, while
+ * validating input and maintaining organized, accurate information of the collection.
+ */
+
 package com.VGS;
 
 import com.VGS.model.Game;
@@ -7,6 +20,12 @@ import com.VGS.service.GameService;
 import java.util.List;
 import java.util.Scanner;
 
+
+/* Constructor: App
+ *
+ * Initializes the GameService and Scanner for user input.
+ * Loads the games from a text file into the collection.
+ */
 public class App {
 
     private GameService service;
@@ -23,17 +42,30 @@ public class App {
         System.out.println(loaded + " games loaded from " + fileName);
     }
 
+    /* Method: main
+     *
+     * The main program of the application.
+     * Creates an instance of the App and starts the program loop.
+     */
     public static void main(String[] args) {
         App app = new App();
         app.run();
     }
 
+    /* Method: run
+     *
+     * Handles the main program loop for the user interface.
+     * Displays the menu, gets user input, and calls the
+     * appropriate methods based on the option selected.
+     *
+     * it will return: boolean - returns whether the program is still running
+     */
     public boolean run() {
 
         boolean running = true;
 
         while (running) {
-            System.out.println("\n--- Game Collection Manager ---");
+            System.out.println("\n--- Video Game Collection System ---");
             System.out.println("1. Add Game");
             System.out.println("2. Remove Game");
             System.out.println("3. Update Game");
@@ -71,6 +103,12 @@ public class App {
         return running;
     }
 
+    /* Method: addGame
+     *
+     * Adds a new game to the collection. Validates the game ID,
+     * title, genre, and platform before adding. Ensures no duplicate IDs.
+     *
+     */
     private void addGame() {
 
         long id;
@@ -122,6 +160,12 @@ public class App {
             System.out.println("Game added successfully!");
     }
 
+    /* Method: removeGame
+     *
+     * Removes a game from the collection by its ID.
+     * Handles invalid or non-existing IDs carefully.
+     *
+     */
     private void removeGame() {
         try {
             System.out.println("Enter Game ID to remove:");
@@ -138,6 +182,12 @@ public class App {
         }
     }
 
+    /* Method: updateGame
+     *
+     * Updates the details of an existing game, including title,
+     * genre, and platform. Validates the input before updating.
+     *
+     */
     private void updateGame() {
         try {
             System.out.println("Enter Game ID to update:");
@@ -179,6 +229,10 @@ public class App {
         }
     }
 
+    /* Method: viewGames
+     *
+     * Displays all games currently stored in the collection.
+     */
     private void viewGames() {
         List<Game> games = service.viewAllGames();
         if (games.isEmpty()) {
@@ -188,6 +242,12 @@ public class App {
         for (Game game : games) System.out.println(game);
     }
 
+    /* Method: trackCompletion (Custom Main Method)
+     *
+     * Marks a game as completed based on its ID.
+     * Validates input and handles non-existent games.
+     *
+     */
     private void trackCompletion() {
         try {
             System.out.println("Enter Game ID to mark completed:");

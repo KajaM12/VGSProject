@@ -23,7 +23,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.VGS.Main</mainClass>
+                            <mainClass>com.VGS.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
