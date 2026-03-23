@@ -151,7 +151,7 @@ public class GameServiceTest {
      */
     @Test
     public void testLoadGamesFromFile() {
-        int loadedCount = service.loadGamesFromFile("testGames.txt"); // returns int
+        int loadedCount = service.loadGamesFromFile("games.txt"); // returns int
         assertTrue(loadedCount >= 0);
 
         List<Game> games = service.viewAllGames();
