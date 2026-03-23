@@ -1,0 +1,290 @@
+<html>
+<head>
+<title>App.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #5f826b; font-style: italic;}
+.s1 { color: #bcbec4;}
+.s2 { color: #7a7e85;}
+.s3 { color: #cf8e6d;}
+.s4 { color: #bcbec4;}
+.s5 { color: #6aab73;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+App.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/**</span>
+ <span class="s0">* Kaja Moore</span>
+ <span class="s0">* CEN 3024C Software Development I</span>
+ <span class="s0">* 03/08/2026</span>
+ <span class="s0">* VideoGameCollection.java</span>
+ <span class="s0">*</span>
+ <span class="s0">* Class Name: Phase 1</span>
+ <span class="s0">*</span>
+ <span class="s0">* The Video Game Collection System allows users to manage their personal video game library.</span>
+ <span class="s0">* It enables adding, removing, updating, viewing, and tracking completion of games, while</span>
+ <span class="s0">* validating input and maintaining organized, accurate information of the collection.</span>
+ <span class="s0">*/</span>
+
+ <span class="s2">// Video Link: https://youtu.be/3PdzgcXUtBs</span>
+ <span class="s2">// GitHubLink: https://github.com/KajaM12/VGSProject.git</span>
+<span class="s3">package </span><span class="s1">com</span><span class="s4">.</span><span class="s1">VGS</span><span class="s4">;</span>
+
+<span class="s3">import </span><span class="s1">com</span><span class="s4">.</span><span class="s1">VGS</span><span class="s4">.</span><span class="s1">model</span><span class="s4">.</span><span class="s1">Game</span><span class="s4">;</span>
+<span class="s3">import </span><span class="s1">com</span><span class="s4">.</span><span class="s1">VGS</span><span class="s4">.</span><span class="s1">repository</span><span class="s4">.</span><span class="s1">Gamerepository</span><span class="s4">;</span>
+<span class="s3">import </span><span class="s1">com</span><span class="s4">.</span><span class="s1">VGS</span><span class="s4">.</span><span class="s1">service</span><span class="s4">.</span><span class="s1">GameService</span><span class="s4">;</span>
+
+<span class="s3">import </span><span class="s1">java</span><span class="s4">.</span><span class="s1">util</span><span class="s4">.</span><span class="s1">List</span><span class="s4">;</span>
+<span class="s3">import </span><span class="s1">java</span><span class="s4">.</span><span class="s1">util</span><span class="s4">.</span><span class="s1">Scanner</span><span class="s4">;</span>
+
+
+<span class="s2">/* Constructor: App 
+ * 
+ * Initializes the GameService and Scanner for user input. 
+ * Loads the games from a text file into the collection. 
+ */</span>
+<span class="s3">public class </span><span class="s1">App </span><span class="s4">{</span>
+
+    <span class="s3">private </span><span class="s1">GameService service</span><span class="s4">;</span>
+    <span class="s3">private </span><span class="s1">Scanner scanner</span><span class="s4">;</span>
+
+    <span class="s3">public </span><span class="s1">App</span><span class="s4">() {</span>
+        <span class="s1">Gamerepository repository </span><span class="s4">= </span><span class="s3">new </span><span class="s1">Gamerepository</span><span class="s4">();</span>
+        <span class="s1">service </span><span class="s4">= </span><span class="s3">new </span><span class="s1">GameService</span><span class="s4">(</span><span class="s1">repository</span><span class="s4">);</span>
+        <span class="s1">scanner </span><span class="s4">= </span><span class="s3">new </span><span class="s1">Scanner</span><span class="s4">(</span><span class="s1">System</span><span class="s4">.</span><span class="s1">in</span><span class="s4">);</span>
+
+        <span class="s2">// Load games from the text file</span>
+        <span class="s1">String fileName </span><span class="s4">= </span><span class="s5">&quot;games.txt&quot;</span><span class="s4">;</span>
+        <span class="s3">int </span><span class="s1">loaded </span><span class="s4">= </span><span class="s1">service</span><span class="s4">.</span><span class="s1">loadGamesFromFile</span><span class="s4">(</span><span class="s1">fileName</span><span class="s4">);</span>
+        <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s1">loaded </span><span class="s4">+ </span><span class="s5">&quot; games loaded from &quot; </span><span class="s4">+ </span><span class="s1">fileName</span><span class="s4">);</span>
+    <span class="s4">}</span>
+
+    <span class="s2">/* Method: main 
+     * 
+     * The main program of the application. 
+     * Creates an instance of the App and starts the program loop. 
+     */</span>
+    <span class="s3">public static void </span><span class="s1">main</span><span class="s4">(</span><span class="s1">String</span><span class="s4">[] </span><span class="s1">args</span><span class="s4">) {</span>
+        <span class="s1">App app </span><span class="s4">= </span><span class="s3">new </span><span class="s1">App</span><span class="s4">();</span>
+        <span class="s1">app</span><span class="s4">.</span><span class="s1">run</span><span class="s4">();</span>
+    <span class="s4">}</span>
+
+    <span class="s2">/* Method: run 
+     * 
+     * Handles the main program loop for the user interface. 
+     * Displays the menu, gets user input, and calls the 
+     * appropriate methods based on the option selected. 
+     * 
+     * it will return: boolean - returns whether the program is still running 
+     */</span>
+    <span class="s3">public boolean </span><span class="s1">run</span><span class="s4">() {</span>
+
+        <span class="s3">boolean </span><span class="s1">running </span><span class="s4">= </span><span class="s3">true</span><span class="s4">;</span>
+
+        <span class="s3">while </span><span class="s4">(</span><span class="s1">running</span><span class="s4">) {</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;</span><span class="s3">\n</span><span class="s5">--- Video Game Collection System ---&quot;</span><span class="s4">);</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;1. Add Game&quot;</span><span class="s4">);</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;2. Remove Game&quot;</span><span class="s4">);</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;3. Update Game&quot;</span><span class="s4">);</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;4. View All Games&quot;</span><span class="s4">);</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;5. Track Completion&quot;</span><span class="s4">);</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;6. Exit&quot;</span><span class="s4">);</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">print</span><span class="s4">(</span><span class="s5">&quot;Choose an option: &quot;</span><span class="s4">);</span>
+
+            <span class="s3">int </span><span class="s1">option</span><span class="s4">;</span>
+
+            <span class="s3">while </span><span class="s4">(</span><span class="s3">true</span><span class="s4">) {</span>
+                <span class="s1">String input </span><span class="s4">= </span><span class="s1">scanner</span><span class="s4">.</span><span class="s1">nextLine</span><span class="s4">();</span>
+                <span class="s3">try </span><span class="s4">{</span>
+                    <span class="s1">option </span><span class="s4">= </span><span class="s1">Integer</span><span class="s4">.</span><span class="s1">parseInt</span><span class="s4">(</span><span class="s1">input</span><span class="s4">);</span>
+                    <span class="s3">if </span><span class="s4">(</span><span class="s1">option </span><span class="s4">&gt;= </span><span class="s6">1 </span><span class="s4">&amp;&amp; </span><span class="s1">option </span><span class="s4">&lt;= </span><span class="s6">6</span><span class="s4">) </span><span class="s3">break</span><span class="s4">;</span>
+                    <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Invalid option. Enter a number 1-6:&quot;</span><span class="s4">);</span>
+                <span class="s4">} </span><span class="s3">catch </span><span class="s4">(</span><span class="s1">NumberFormatException e</span><span class="s4">) {</span>
+                    <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Invalid option. Enter a number 1-6:&quot;</span><span class="s4">);</span>
+                <span class="s4">}</span>
+            <span class="s4">}</span>
+
+            <span class="s3">switch </span><span class="s4">(</span><span class="s1">option</span><span class="s4">) {</span>
+                <span class="s3">case </span><span class="s6">1 </span><span class="s1">-&gt; addGame</span><span class="s4">();</span>
+                <span class="s3">case </span><span class="s6">2 </span><span class="s1">-&gt; removeGame</span><span class="s4">();</span>
+                <span class="s3">case </span><span class="s6">3 </span><span class="s1">-&gt; updateGame</span><span class="s4">();</span>
+                <span class="s3">case </span><span class="s6">4 </span><span class="s1">-&gt; viewGames</span><span class="s4">();</span>
+                <span class="s3">case </span><span class="s6">5 </span><span class="s1">-&gt; trackCompletion</span><span class="s4">();</span>
+                <span class="s3">case </span><span class="s6">6 </span><span class="s1">-&gt; </span><span class="s4">{</span>
+                    <span class="s1">running </span><span class="s4">= </span><span class="s3">false</span><span class="s4">;</span>
+                    <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Goodbye!&quot;</span><span class="s4">);</span>
+                <span class="s4">}</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+
+        <span class="s3">return </span><span class="s1">running</span><span class="s4">;</span>
+    <span class="s4">}</span>
+
+    <span class="s2">/* Method: addGame 
+     * 
+     * Adds a new game to the collection. Validates the game ID, 
+     * title, genre, and platform before adding. Ensures no duplicate IDs. 
+     * 
+     */</span>
+    <span class="s3">private void </span><span class="s1">addGame</span><span class="s4">() {</span>
+
+        <span class="s3">long </span><span class="s1">id</span><span class="s4">;</span>
+
+        <span class="s3">while </span><span class="s4">(</span><span class="s3">true</span><span class="s4">) {</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Enter Game ID (max 10 digits):&quot;</span><span class="s4">);</span>
+
+            <span class="s3">try </span><span class="s4">{</span>
+                <span class="s1">id </span><span class="s4">= </span><span class="s1">Long</span><span class="s4">.</span><span class="s1">parseLong</span><span class="s4">(</span><span class="s1">scanner</span><span class="s4">.</span><span class="s1">nextLine</span><span class="s4">());</span>
+
+                <span class="s3">if </span><span class="s4">(</span><span class="s1">id </span><span class="s4">&lt;= </span><span class="s6">0 </span><span class="s4">|| </span><span class="s1">String</span><span class="s4">.</span><span class="s1">valueOf</span><span class="s4">(</span><span class="s1">id</span><span class="s4">).</span><span class="s1">length</span><span class="s4">() &gt; </span><span class="s6">10</span><span class="s4">) {</span>
+                    <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Invalid ID. Must be 1–10 digits.&quot;</span><span class="s4">);</span>
+                    <span class="s3">continue</span><span class="s4">;</span>
+                <span class="s4">}</span>
+
+                <span class="s3">if </span><span class="s4">(</span><span class="s1">service</span><span class="s4">.</span><span class="s1">findGame</span><span class="s4">(</span><span class="s1">id</span><span class="s4">) != </span><span class="s3">null</span><span class="s4">) {</span>
+                    <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;A game with this ID already exists.&quot;</span><span class="s4">);</span>
+                    <span class="s3">continue</span><span class="s4">;</span>
+                <span class="s4">}</span>
+
+                <span class="s3">break</span><span class="s4">;</span>
+
+            <span class="s4">} </span><span class="s3">catch </span><span class="s4">(</span><span class="s1">NumberFormatException e</span><span class="s4">) {</span>
+                <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Invalid ID. Must be numeric.&quot;</span><span class="s4">);</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+
+        <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Enter Title:&quot;</span><span class="s4">);</span>
+        <span class="s1">String title </span><span class="s4">= </span><span class="s1">scanner</span><span class="s4">.</span><span class="s1">nextLine</span><span class="s4">();</span>
+
+        <span class="s1">String genre</span><span class="s4">;</span>
+        <span class="s3">while </span><span class="s4">(</span><span class="s3">true</span><span class="s4">) {</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Enter Genre (letters only):&quot;</span><span class="s4">);</span>
+            <span class="s1">genre </span><span class="s4">= </span><span class="s1">scanner</span><span class="s4">.</span><span class="s1">nextLine</span><span class="s4">();</span>
+
+            <span class="s3">if </span><span class="s4">(!</span><span class="s1">genre</span><span class="s4">.</span><span class="s1">matches</span><span class="s4">(</span><span class="s5">&quot;[a-zA-Z ]+&quot;</span><span class="s4">)) {</span>
+                <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Invalid genre. Letters only.&quot;</span><span class="s4">);</span>
+                <span class="s3">continue</span><span class="s4">;</span>
+            <span class="s4">}</span>
+            <span class="s3">break</span><span class="s4">;</span>
+        <span class="s4">}</span>
+
+        <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Enter Platform:&quot;</span><span class="s4">);</span>
+        <span class="s1">String platform </span><span class="s4">= </span><span class="s1">scanner</span><span class="s4">.</span><span class="s1">nextLine</span><span class="s4">();</span>
+
+        <span class="s1">Game game </span><span class="s4">= </span><span class="s3">new </span><span class="s1">Game</span><span class="s4">(</span><span class="s1">id</span><span class="s4">, </span><span class="s1">title</span><span class="s4">, </span><span class="s1">genre</span><span class="s4">, </span><span class="s1">platform</span><span class="s4">, </span><span class="s3">false</span><span class="s4">);</span>
+
+        <span class="s3">if </span><span class="s4">(</span><span class="s1">service</span><span class="s4">.</span><span class="s1">addGame</span><span class="s4">(</span><span class="s1">game</span><span class="s4">))</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Game added successfully!&quot;</span><span class="s4">);</span>
+    <span class="s4">}</span>
+
+    <span class="s2">/* Method: removeGame 
+     * 
+     * Removes a game from the collection by its ID. 
+     * Handles invalid or non-existing IDs carefully. 
+     * 
+     */</span>
+    <span class="s3">private void </span><span class="s1">removeGame</span><span class="s4">() {</span>
+        <span class="s3">try </span><span class="s4">{</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Enter Game ID to remove:&quot;</span><span class="s4">);</span>
+            <span class="s3">long </span><span class="s1">id </span><span class="s4">= </span><span class="s1">Long</span><span class="s4">.</span><span class="s1">parseLong</span><span class="s4">(</span><span class="s1">scanner</span><span class="s4">.</span><span class="s1">nextLine</span><span class="s4">());</span>
+
+            <span class="s3">boolean </span><span class="s1">removed </span><span class="s4">= </span><span class="s1">service</span><span class="s4">.</span><span class="s1">removeGame</span><span class="s4">(</span><span class="s1">id</span><span class="s4">);</span>
+            <span class="s3">if </span><span class="s4">(</span><span class="s1">removed</span><span class="s4">) </span><span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Game removed.&quot;</span><span class="s4">);</span>
+            <span class="s3">else </span><span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Game not found. Returning to main menu.&quot;</span><span class="s4">);</span>
+
+        <span class="s4">} </span><span class="s3">catch </span><span class="s4">(</span><span class="s1">NumberFormatException e</span><span class="s4">) {</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Invalid ID. Must be numeric. Returning to main menu.&quot;</span><span class="s4">);</span>
+        <span class="s4">} </span><span class="s3">catch </span><span class="s4">(</span><span class="s1">Exception e</span><span class="s4">) {</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;An error occurred. Returning to main menu.&quot;</span><span class="s4">);</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s2">/* Method: updateGame 
+     * 
+     * Updates the details of an existing game, including title, 
+     * genre, and platform. Validates the input before updating. 
+     * 
+     */</span>
+    <span class="s3">private void </span><span class="s1">updateGame</span><span class="s4">() {</span>
+        <span class="s3">try </span><span class="s4">{</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Enter Game ID to update:&quot;</span><span class="s4">);</span>
+            <span class="s3">long </span><span class="s1">id </span><span class="s4">= </span><span class="s1">Long</span><span class="s4">.</span><span class="s1">parseLong</span><span class="s4">(</span><span class="s1">scanner</span><span class="s4">.</span><span class="s1">nextLine</span><span class="s4">());</span>
+
+            <span class="s1">Game game </span><span class="s4">= </span><span class="s1">service</span><span class="s4">.</span><span class="s1">findGame</span><span class="s4">(</span><span class="s1">id</span><span class="s4">);</span>
+            <span class="s3">if </span><span class="s4">(</span><span class="s1">game </span><span class="s4">== </span><span class="s3">null</span><span class="s4">) {</span>
+                <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Game not found. Returning to main menu.&quot;</span><span class="s4">);</span>
+                <span class="s3">return</span><span class="s4">;</span>
+            <span class="s4">}</span>
+
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;New Title:&quot;</span><span class="s4">);</span>
+            <span class="s1">String title </span><span class="s4">= </span><span class="s1">scanner</span><span class="s4">.</span><span class="s1">nextLine</span><span class="s4">();</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;New Genre (letters only):&quot;</span><span class="s4">);</span>
+            <span class="s1">String genre </span><span class="s4">= </span><span class="s1">scanner</span><span class="s4">.</span><span class="s1">nextLine</span><span class="s4">();</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;New Platform:&quot;</span><span class="s4">);</span>
+            <span class="s1">String platform </span><span class="s4">= </span><span class="s1">scanner</span><span class="s4">.</span><span class="s1">nextLine</span><span class="s4">();</span>
+
+            <span class="s3">if </span><span class="s4">(</span><span class="s1">title</span><span class="s4">.</span><span class="s1">isBlank</span><span class="s4">() || </span><span class="s1">genre</span><span class="s4">.</span><span class="s1">isBlank</span><span class="s4">() || </span><span class="s1">platform</span><span class="s4">.</span><span class="s1">isBlank</span><span class="s4">()) {</span>
+                <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;All fields are required. Returning to main menu.&quot;</span><span class="s4">);</span>
+                <span class="s3">return</span><span class="s4">;</span>
+            <span class="s4">}</span>
+
+            <span class="s3">if </span><span class="s4">(!</span><span class="s1">genre</span><span class="s4">.</span><span class="s1">matches</span><span class="s4">(</span><span class="s5">&quot;[a-zA-Z ]+&quot;</span><span class="s4">)) {</span>
+                <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Invalid genre. Only letters allowed. Returning to main menu.&quot;</span><span class="s4">);</span>
+                <span class="s3">return</span><span class="s4">;</span>
+            <span class="s4">}</span>
+
+            <span class="s3">if </span><span class="s4">(</span><span class="s1">service</span><span class="s4">.</span><span class="s1">updateGame</span><span class="s4">(</span><span class="s1">id</span><span class="s4">, </span><span class="s1">title</span><span class="s4">, </span><span class="s1">genre</span><span class="s4">, </span><span class="s1">platform</span><span class="s4">)) {</span>
+                <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Game updated successfully!&quot;</span><span class="s4">);</span>
+            <span class="s4">} </span><span class="s3">else </span><span class="s4">{</span>
+                <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Failed to update game.&quot;</span><span class="s4">);</span>
+            <span class="s4">}</span>
+
+        <span class="s4">} </span><span class="s3">catch </span><span class="s4">(</span><span class="s1">NumberFormatException e</span><span class="s4">) {</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Invalid ID. Must be numeric. Returning to main menu.&quot;</span><span class="s4">);</span>
+        <span class="s4">} </span><span class="s3">catch </span><span class="s4">(</span><span class="s1">Exception e</span><span class="s4">) {</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;An error occurred. Returning to main menu.&quot;</span><span class="s4">);</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s2">/* Method: viewGames 
+     * 
+     * Displays all games currently stored in the collection. 
+     */</span>
+    <span class="s3">private void </span><span class="s1">viewGames</span><span class="s4">() {</span>
+        <span class="s1">List</span><span class="s4">&lt;</span><span class="s1">Game</span><span class="s4">&gt; </span><span class="s1">games </span><span class="s4">= </span><span class="s1">service</span><span class="s4">.</span><span class="s1">viewAllGames</span><span class="s4">();</span>
+        <span class="s3">if </span><span class="s4">(</span><span class="s1">games</span><span class="s4">.</span><span class="s1">isEmpty</span><span class="s4">()) {</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;No games found.&quot;</span><span class="s4">);</span>
+            <span class="s3">return</span><span class="s4">;</span>
+        <span class="s4">}</span>
+        <span class="s3">for </span><span class="s4">(</span><span class="s1">Game game </span><span class="s4">: </span><span class="s1">games</span><span class="s4">) </span><span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s1">game</span><span class="s4">);</span>
+    <span class="s4">}</span>
+
+    <span class="s2">/* Method: trackCompletion (Custom Main Method) 
+     * 
+     * Marks a game as completed based on its ID. 
+     * Validates input and handles non-existent games. 
+     * 
+     */</span>
+    <span class="s3">private void </span><span class="s1">trackCompletion</span><span class="s4">() {</span>
+        <span class="s3">try </span><span class="s4">{</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Enter Game ID to mark completed:&quot;</span><span class="s4">);</span>
+            <span class="s3">long </span><span class="s1">id </span><span class="s4">= </span><span class="s1">Long</span><span class="s4">.</span><span class="s1">parseLong</span><span class="s4">(</span><span class="s1">scanner</span><span class="s4">.</span><span class="s1">nextLine</span><span class="s4">());</span>
+
+            <span class="s1">Game game </span><span class="s4">= </span><span class="s1">service</span><span class="s4">.</span><span class="s1">trackCompletion</span><span class="s4">(</span><span class="s1">id</span><span class="s4">);</span>
+            <span class="s3">if </span><span class="s4">(</span><span class="s1">game </span><span class="s4">== </span><span class="s3">null</span><span class="s4">) </span><span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Game not found. Returning to main menu.&quot;</span><span class="s4">);</span>
+            <span class="s3">else </span><span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Game marked as completed.&quot;</span><span class="s4">);</span>
+
+        <span class="s4">} </span><span class="s3">catch </span><span class="s4">(</span><span class="s1">NumberFormatException e</span><span class="s4">) {</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;Invalid ID. Must be numeric. Returning to main menu.&quot;</span><span class="s4">);</span>
+        <span class="s4">} </span><span class="s3">catch </span><span class="s4">(</span><span class="s1">Exception e</span><span class="s4">) {</span>
+            <span class="s1">System</span><span class="s4">.</span><span class="s1">out</span><span class="s4">.</span><span class="s1">println</span><span class="s4">(</span><span class="s5">&quot;An error occurred. Returning to main menu.&quot;</span><span class="s4">);</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+<span class="s4">}</span></pre>
+</body>
+</html>

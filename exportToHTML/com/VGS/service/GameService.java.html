@@ -1,0 +1,138 @@
+<html>
+<head>
+<title>GameService.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #2aacb8;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+GameService.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">VGS</span><span class="s2">.</span><span class="s1">service</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">VGS</span><span class="s2">.</span><span class="s1">App</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">VGS</span><span class="s2">.</span><span class="s1">model</span><span class="s2">.</span><span class="s1">Game</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">VGS</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">Gamerepository</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">File</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Scanner</span><span class="s2">;</span>
+
+
+<span class="s3">/* Provides the business logic for the Video Game Collection System. 
+ * Acts as a service layer between the user interface (App) and the repository (Gamerepository). 
+ * Handles adding, removing, updating, viewing, and marking games as completed. 
+ * Also loads games safely from a text file. 
+ */</span>
+<span class="s0">public class </span><span class="s1">GameService </span><span class="s2">{</span>
+
+    <span class="s0">private </span><span class="s1">Gamerepository repository</span><span class="s2">;</span>
+
+   <span class="s3">// Initializes the service with a given game repository.</span>
+    <span class="s0">public </span><span class="s1">GameService</span><span class="s2">(</span><span class="s1">Gamerepository repository</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">repository </span><span class="s2">= </span><span class="s1">repository</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// Adds a new game to the repository.</span>
+    <span class="s0">public boolean </span><span class="s1">addGame</span><span class="s2">(</span><span class="s1">Game game</span><span class="s2">) {</span>
+        <span class="s0">return </span><span class="s1">repository</span><span class="s2">.</span><span class="s1">addGame</span><span class="s2">(</span><span class="s1">game</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// Remove a game by ID.</span>
+    <span class="s0">public boolean </span><span class="s1">removeGame</span><span class="s2">(</span><span class="s0">long </span><span class="s1">id</span><span class="s2">) {</span>
+        <span class="s0">return </span><span class="s1">repository</span><span class="s2">.</span><span class="s1">removeGame</span><span class="s2">(</span><span class="s1">id</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// View all games from list.</span>
+    <span class="s0">public </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Game</span><span class="s2">&gt; </span><span class="s1">viewAllGames</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">repository</span><span class="s2">.</span><span class="s1">getAllGames</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// Update existing game from list.</span>
+    <span class="s0">public boolean </span><span class="s1">updateGame</span><span class="s2">(</span><span class="s0">long </span><span class="s1">id</span><span class="s2">, </span><span class="s1">String title</span><span class="s2">, </span><span class="s1">String genre</span><span class="s2">, </span><span class="s1">String platform</span><span class="s2">) {</span>
+        <span class="s1">Game game </span><span class="s2">= </span><span class="s1">repository</span><span class="s2">.</span><span class="s1">findGame</span><span class="s2">(</span><span class="s1">id</span><span class="s2">);</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">game </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) </span><span class="s0">return false</span><span class="s2">;</span>
+
+        <span class="s1">game</span><span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s1">title</span><span class="s2">);</span>
+        <span class="s1">game</span><span class="s2">.</span><span class="s1">setGenre</span><span class="s2">(</span><span class="s1">genre</span><span class="s2">);</span>
+        <span class="s1">game</span><span class="s2">.</span><span class="s1">setPlatform</span><span class="s2">(</span><span class="s1">platform</span><span class="s2">);</span>
+
+        <span class="s0">return true</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// Track completion (true or false).</span>
+    <span class="s0">public </span><span class="s1">Game trackCompletion</span><span class="s2">(</span><span class="s0">long </span><span class="s1">id</span><span class="s2">) {</span>
+        <span class="s1">Game game </span><span class="s2">= </span><span class="s1">repository</span><span class="s2">.</span><span class="s1">findGame</span><span class="s2">(</span><span class="s1">id</span><span class="s2">);</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">game </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s1">game</span><span class="s2">.</span><span class="s1">setCompleted</span><span class="s2">(</span><span class="s0">true</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">game</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// Find game by ID.</span>
+    <span class="s0">public </span><span class="s1">Game findGame</span><span class="s2">(</span><span class="s0">long </span><span class="s1">id</span><span class="s2">) {</span>
+        <span class="s0">return </span><span class="s1">repository</span><span class="s2">.</span><span class="s1">findGame</span><span class="s2">(</span><span class="s1">id</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// Loads games from a text file in the resources folder.</span>
+    <span class="s3">// Skips invalid lines or improperly formatted data.</span>
+    <span class="s0">public int </span><span class="s1">loadGamesFromFile</span><span class="s2">(</span><span class="s1">String fileName</span><span class="s2">) {</span>
+        <span class="s0">int </span><span class="s1">count </span><span class="s2">= </span><span class="s4">0</span><span class="s2">;</span>
+        <span class="s1">Scanner fileScanner </span><span class="s2">= </span><span class="s0">null</span><span class="s2">;</span>
+
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s3">// Load as a resource from the JAR</span>
+            <span class="s1">var inputStream </span><span class="s2">= </span><span class="s1">App</span><span class="s2">.</span><span class="s0">class</span><span class="s2">.</span><span class="s1">getClassLoader</span><span class="s2">().</span><span class="s1">getResourceAsStream</span><span class="s2">(</span><span class="s1">fileName</span><span class="s2">);</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">inputStream </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;File not found in resources: &quot; </span><span class="s2">+ </span><span class="s1">fileName</span><span class="s2">);</span>
+                <span class="s0">return </span><span class="s4">0</span><span class="s2">;</span>
+            <span class="s2">}</span>
+
+            <span class="s1">fileScanner </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Scanner</span><span class="s2">(</span><span class="s1">inputStream</span><span class="s2">);</span>
+
+            <span class="s0">while </span><span class="s2">(</span><span class="s1">fileScanner</span><span class="s2">.</span><span class="s1">hasNextLine</span><span class="s2">()) {</span>
+                <span class="s1">String line </span><span class="s2">= </span><span class="s1">fileScanner</span><span class="s2">.</span><span class="s1">nextLine</span><span class="s2">();</span>
+                <span class="s1">String</span><span class="s2">[] </span><span class="s1">parts </span><span class="s2">= </span><span class="s1">line</span><span class="s2">.</span><span class="s1">split</span><span class="s2">(</span><span class="s5">&quot;,&quot;</span><span class="s2">);</span>
+
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">parts</span><span class="s2">.</span><span class="s1">length </span><span class="s2">&lt; </span><span class="s4">5</span><span class="s2">) </span><span class="s0">continue</span><span class="s2">;</span>
+
+                <span class="s0">try </span><span class="s2">{</span>
+                    <span class="s0">long </span><span class="s1">id </span><span class="s2">= </span><span class="s1">Long</span><span class="s2">.</span><span class="s1">parseLong</span><span class="s2">(</span><span class="s1">parts</span><span class="s2">[</span><span class="s4">0</span><span class="s2">].</span><span class="s1">trim</span><span class="s2">());</span>
+                    <span class="s1">String title </span><span class="s2">= </span><span class="s1">parts</span><span class="s2">[</span><span class="s4">1</span><span class="s2">].</span><span class="s1">trim</span><span class="s2">();</span>
+                    <span class="s1">String genre </span><span class="s2">= </span><span class="s1">parts</span><span class="s2">[</span><span class="s4">2</span><span class="s2">].</span><span class="s1">trim</span><span class="s2">();</span>
+                    <span class="s1">String platform </span><span class="s2">= </span><span class="s1">parts</span><span class="s2">[</span><span class="s4">3</span><span class="s2">].</span><span class="s1">trim</span><span class="s2">();</span>
+                    <span class="s0">boolean </span><span class="s1">completed </span><span class="s2">= </span><span class="s1">Boolean</span><span class="s2">.</span><span class="s1">parseBoolean</span><span class="s2">(</span><span class="s1">parts</span><span class="s2">[</span><span class="s4">4</span><span class="s2">].</span><span class="s1">trim</span><span class="s2">());</span>
+
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">title</span><span class="s2">.</span><span class="s1">isBlank</span><span class="s2">() || !</span><span class="s1">genre</span><span class="s2">.</span><span class="s1">matches</span><span class="s2">(</span><span class="s5">&quot;[a-zA-Z ]+&quot;</span><span class="s2">) || </span><span class="s1">platform</span><span class="s2">.</span><span class="s1">isBlank</span><span class="s2">() || </span><span class="s1">id </span><span class="s2">&lt;= </span><span class="s4">0</span><span class="s2">) {</span>
+                        <span class="s0">continue</span><span class="s2">;</span>
+                    <span class="s2">}</span>
+
+                    <span class="s1">Game game </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Game</span><span class="s2">(</span><span class="s1">id</span><span class="s2">, </span><span class="s1">title</span><span class="s2">, </span><span class="s1">genre</span><span class="s2">, </span><span class="s1">platform</span><span class="s2">, </span><span class="s1">completed</span><span class="s2">);</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">addGame</span><span class="s2">(</span><span class="s1">game</span><span class="s2">)) </span><span class="s1">count</span><span class="s2">++;</span>
+
+                <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">Exception e</span><span class="s2">) {</span>
+                    <span class="s3">// skip invalid line</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+        <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">Exception e</span><span class="s2">) {</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Error loading file: &quot; </span><span class="s2">+ </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getMessage</span><span class="s2">());</span>
+        <span class="s2">} </span><span class="s0">finally </span><span class="s2">{</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">fileScanner </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) </span><span class="s1">fileScanner</span><span class="s2">.</span><span class="s1">close</span><span class="s2">();</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return </span><span class="s1">count</span><span class="s2">;</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

@@ -196,38 +196,77 @@ public class App {
             long id = Long.parseLong(scanner.nextLine());
 
             Game game = service.findGame(id);
+
             if (game == null) {
                 System.out.println("Game not found. Returning to main menu.");
                 return;
             }
 
-            System.out.println("New Title:");
-            String title = scanner.nextLine();
-            System.out.println("New Genre (letters only):");
-            String genre = scanner.nextLine();
-            System.out.println("New Platform:");
-            String platform = scanner.nextLine();
+            System.out.println("\nWhat would you like to update?");
+            System.out.println("1. Title");
+            System.out.println("2. Genre");
+            System.out.println("3. Platform");
+            System.out.println("4. Completion Status");
+            System.out.println("5. Cancel");
 
-            if (title.isBlank() || genre.isBlank() || platform.isBlank()) {
-                System.out.println("All fields are required. Returning to main menu.");
-                return;
+            int choice = Integer.parseInt(scanner.nextLine());
+
+            switch (choice) {
+                case 1:
+                    System.out.println("Enter new title:");
+                    String title = scanner.nextLine();
+                    if (title.isBlank()) {
+                        System.out.println("Title cannot be empty.");
+                        return;
+                    }
+                    service.updateGame(id, title, game.getGenre(), game.getPlatform());
+                    break;
+
+                case 2:
+                    System.out.println("Enter new genre:");
+                    String genre = scanner.nextLine();
+                    if (genre.isBlank()) {
+                        System.out.println("Genre cannot be empty.");
+                        return;
+                    }
+                    service.updateGame(id, game.getTitle(), genre, game.getPlatform());
+                    break;
+
+                case 3:
+                    System.out.println("Enter new platform:");
+                    String platform = scanner.nextLine();
+                    if (platform.isBlank()) {
+                        System.out.println("Platform cannot be empty.");
+                        return;
+                    }
+                    service.updateGame(id, game.getTitle(), game.getGenre(), platform);
+                    break;
+
+                case 4:
+                    System.out.println("Enter completion status (true/false):");
+                    String input = scanner.nextLine();
+
+                    if (!input.equalsIgnoreCase("true") && !input.equalsIgnoreCase("false")) {
+                        System.out.println("Invalid input. Must be true or false.");
+                        return;
+                    }
+
+                    game.setCompleted(Boolean.parseBoolean(input));
+                    break;
+
+                case 5:
+                    System.out.println("Update cancelled.");
+                    return;
+
+                default:
+                    System.out.println("Invalid choice.");
+                    return;
             }
 
-            if (!genre.matches("[a-zA-Z ]+")) {
-                System.out.println("Invalid genre. Only letters allowed. Returning to main menu.");
-                return;
-            }
-
-            if (service.updateGame(id, title, genre, platform)) {
-                System.out.println("Game updated successfully!");
-            } else {
-                System.out.println("Failed to update game.");
-            }
+            System.out.println("Game updated successfully!");
 
         } catch (NumberFormatException e) {
-            System.out.println("Invalid ID. Must be numeric. Returning to main menu.");
-        } catch (Exception e) {
-            System.out.println("An error occurred. Returning to main menu.");
+            System.out.println("Invalid input. Returning to main menu.");
         }
     }
 

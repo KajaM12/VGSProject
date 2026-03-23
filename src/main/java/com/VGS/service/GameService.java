@@ -20,21 +20,25 @@ public class GameService {
 
    // Initializes the service with a given game repository.
     public GameService(Gamerepository repository) {
+
         this.repository = repository;
     }
 
     // Adds a new game to the repository.
     public boolean addGame(Game game) {
+
         return repository.addGame(game);
     }
 
     // Remove a game by ID.
     public boolean removeGame(long id) {
+
         return repository.removeGame(id);
     }
 
     // View all games from list.
     public List<Game> viewAllGames() {
+
         return repository.getAllGames();
     }
 
