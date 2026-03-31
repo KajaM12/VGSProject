@@ -13,6 +13,7 @@
 
  // GitHubLink: https://github.com/KajaM12/VGSProject.git
  // My GUI Web Interface Link: http://localhost:8080
+
 package com.VGS;
 
 import com.VGS.model.Game;

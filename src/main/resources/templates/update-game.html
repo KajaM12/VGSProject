@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Game</title>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #a020f0;
+            text-align: center;
+            text-shadow: 2px 2px #00ff00;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 8px;
+            border-radius: 6px;
+            border: none;
+            width: 100%;
+            margin-top: 4px;
+        }
+
+        .btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-save {
+            background-color: #a020f0;
+            color: #fff;
+        }
+
+        .btn-save:hover {
+            background-color: #00ff00;
+            color: #000;
+        }
+
+        .btn-back {
+            background-color: #ff0000;
+            color: #fff;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .btn-back:hover {
+            opacity: 0.8;
+        }
+
+        .alert {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .alert-danger {
+            background-color: #ff4d6d;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<h1>Update Game</h1>
+
+<div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+<form th:action="@{/update}" method="post">
+    <input type="hidden" th:name="id" th:value="${game.id}">
+
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" th:value="${game.title}" required>
+
+    <label for="genre">Genre:</label>
+    <input type="text" id="genre" name="genre" th:value="${game.genre}" required>
+
+    <label for="platform">Platform:</label>
+    <input type="text" id="platform" name="platform" th:value="${game.platform}" required>
+
+    <button type="submit" class="btn btn-save">Save Changes</button>
+</form>
+
+<a href="/" class="btn-back">Back</a>
+</body>
+</html>

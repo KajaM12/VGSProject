@@ -143,6 +143,59 @@ public class GameController {
         return "index";
     }
 
+    // Show update form
+    @GetMapping("/update/{id}")
+    public String showUpdateForm(@PathVariable String id, Model model) {
+        try {
+            long gameId = Long.parseLong(id);
+            Game game = service.findGame(gameId);
+            if (game == null) {
+                model.addAttribute("errorMessage", "Game with ID " + id + " not found.");
+                model.addAttribute("games", service.viewAllGames());
+                return "index";
+            }
+            model.addAttribute("game", game); // pre-fill form
+            return "update-game"; // update-game.html
+        } catch (NumberFormatException e) {
+            model.addAttribute("errorMessage", "Invalid game ID: " + id);
+            model.addAttribute("games", service.viewAllGames());
+            return "index";
+        }
+    }
+
+    // Handle update POST
+    @PostMapping("/update")
+    public String updateGame(@RequestParam long id,
+                             @RequestParam String title,
+                             @RequestParam String genre,
+                             @RequestParam String platform,
+                             Model model) {
+
+        // Validate fields
+        if (title.isBlank() || genre.isBlank() || platform.isBlank()) {
+            model.addAttribute("errorMessage", "All fields are required.");
+            model.addAttribute("game", service.findGame(id));
+            return "update-game";
+        }
+
+        if (!genre.matches("[a-zA-Z\\s]+")) {
+            model.addAttribute("errorMessage", "Genre must contain letters only.");
+            model.addAttribute("game", service.findGame(id));
+            return "update-game";
+        }
+
+        boolean updated = service.updateGame(id, title, genre, platform);
+
+        if (updated) {
+            model.addAttribute("successMessage", "Game updated successfully!");
+        } else {
+            model.addAttribute("errorMessage", "Game not found.");
+        }
+
+        model.addAttribute("games", service.viewAllGames());
+        return "index";
+    }
+
     // Exits the page
     @GetMapping("/exit")
     public String exitPage() {
