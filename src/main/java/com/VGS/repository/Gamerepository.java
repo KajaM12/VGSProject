@@ -4,6 +4,9 @@ import com.VGS.model.Game;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
+@Repository
 public class Gamerepository {
 
     private List<Game> games = new ArrayList<>();

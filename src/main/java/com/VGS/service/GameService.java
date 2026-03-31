@@ -14,7 +14,11 @@ import java.util.Scanner;
  * Handles adding, removing, updating, viewing, and marking games as completed.
  * Also loads games safely from a text file.
  */
-public class GameService {
+
+import org.springframework.stereotype.Service;
+
+@Service
+    public class GameService {
 
     private Gamerepository repository;
 
@@ -41,6 +45,12 @@ public class GameService {
 
         return repository.getAllGames();
     }
+
+    public boolean existsById(long id) {
+        return repository.getAllGames().stream()
+                .anyMatch(game -> game.getId() == id);
+    }
+
 
     // Update existing game from list.
     public boolean updateGame(long id, String title, String genre, String platform) {
@@ -119,3 +129,4 @@ public class GameService {
         return count;
     }
 }
+

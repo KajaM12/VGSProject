@@ -1,7 +1,7 @@
 /**
  * Kaja Moore
  * CEN 3024C Software Development I
- * 03/08/2026
+ * 03/30/2026
  * VideoGameCollection.java
  *
  * Class Name: Phase 1
@@ -12,6 +12,7 @@
  */
 
  // GitHubLink: https://github.com/KajaM12/VGSProject.git
+ // My GUI Web Interface Link: http://localhost:8080
 package com.VGS;
 
 import com.VGS.model.Game;
@@ -20,7 +21,6 @@ import com.VGS.service.GameService;
 
 import java.util.List;
 import java.util.Scanner;
-
 
 /* Constructor: App
  *

@@ -1,0 +1,160 @@
+<!-- Lets create a purple, black, and green video game collection theme to make it more entertaining -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Game Collection</title>
+    <style>
+        /* Body & general font */
+        body {
+            background-color: #0a0a0a; /* deep black */
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #a020f0; /* purple title */
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px #00ff00; /* green glow */
+        }
+
+        a {
+            color: #00ff00;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        a:hover {
+            color: #a020f0;
+            text-shadow: 1px 1px #ffffff;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #1a1a1a; /* dark gray-black */
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        th {
+            background-color: #3d0075; /* dark purple headers */
+            color: #00ff00; /* green text */
+        }
+
+        tr:hover {
+            background-color: #2e2e2e; /* hover effect */
+        }
+
+        /* Messages */
+        .alert {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .alert-danger {
+            background-color: #ff4d6d; /* pinkish red */
+            color: #ffffff;
+        }
+
+        .alert-success {
+            background-color: #00ff7f; /* neon green */
+            color: #000000;
+        }
+
+        /* Add button */
+        .add-btn {
+            display: inline-block;
+            background-color: #a020f0;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            margin-bottom: 15px;
+        }
+
+        .add-btn:hover {
+            background-color: #00ff00;
+            color: #000000;
+        }
+
+        /* Action links styling */
+        .action-link {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .action-link.delete {
+            background-color: #ff4d6d;
+            color: #fff;
+        }
+
+        .action-link.complete {
+            background-color: #00ff7f;
+            color: #000;
+        }
+
+        .action-link:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Game Collection</h1>
+
+<!-- Messages -->
+<div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+<div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
+<!-- Add game link -->
+<a href="/add" class="add-btn">Add Game</a>
+
+<!-- Game table -->
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Genre</th>
+        <th>Platform</th>
+        <th>Completed</th>
+        <th>Actions</th>
+    </tr>
+
+    <tr th:each="game : ${games}">
+        <td th:text="${game.id}"></td>
+        <td th:text="${game.title}"></td>
+        <td th:text="${game.genre}"></td>
+        <td th:text="${game.platform}"></td>
+        <td th:text="${game.completed}"></td>
+        <td>
+            <a th:href="@{/delete/{id}(id=${game.id})}" class="action-link delete">Delete</a>
+            <a th:href="@{/complete/{id}(id=${game.id})}" class="action-link complete">Complete</a>
+        </td>
+    </tr>
+
+</table>
+
+<!-- Exit button -->
+<a href="/exit" class="add-btn" style="background-color:#ff0000;">Exit</a>
+
+</body>
+</html>
