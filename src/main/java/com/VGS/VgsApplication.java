@@ -1,5 +1,6 @@
 package com.VGS;
 
+import com.VGS.config.DatabaseInitializer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -13,6 +14,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class VgsApplication {
 
     public static void main(String[] args) {
+        String dbPath = "games.db"; // Can be configured in application.properties
+        DatabaseInitializer.initialize(dbPath);
         SpringApplication.run(VgsApplication.class, args);
     }
 }

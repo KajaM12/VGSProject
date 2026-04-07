@@ -8,86 +8,81 @@ import java.io.File;
 import java.util.List;
 import java.util.Scanner;
 
-
 /* Provides the business logic for the Video Game Collection System.
  * Acts as a service layer between the user interface (App) and the repository (Gamerepository).
  * Handles adding, removing, updating, viewing, and marking games as completed.
  * Also loads games safely from a text file.
  */
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-    public class GameService {
+public class GameService {
 
-    private Gamerepository repository;
+    private final Gamerepository repository;
+    private final String dbPath;
 
-   // Initializes the service with a given game repository.
-    public GameService(Gamerepository repository) {
-
+    public GameService(Gamerepository repository, String dbPath) {
         this.repository = repository;
+        this.dbPath = dbPath;
     }
 
-    // Adds a new game to the repository.
+    // Add a game to SQLite
     public boolean addGame(Game game) {
-
-        return repository.addGame(game);
+        return repository.addGame(game, dbPath);
     }
 
-    // Remove a game by ID.
+    // Remove a game by ID
     public boolean removeGame(long id) {
-
-        return repository.removeGame(id);
+        return repository.removeGame(id, dbPath);
     }
 
-    // View all games from list.
+    // View all games
     public List<Game> viewAllGames() {
-
-        return repository.getAllGames();
+        return repository.getAllGames(dbPath);
     }
 
+    // Check if a game exists by ID
     public boolean existsById(long id) {
-        return repository.getAllGames().stream()
+        return repository.getAllGames(dbPath).stream()
                 .anyMatch(game -> game.getId() == id);
     }
 
-
-    // Update existing game from list.
+    // Update a game by ID
     public boolean updateGame(long id, String title, String genre, String platform) {
-        Game game = repository.findGame(id);
-        if (game == null) return false;
+        Game existingGame = repository.findGame(id, dbPath);
+        if (existingGame == null) return false;
 
-        game.setTitle(title);
-        game.setGenre(genre);
-        game.setPlatform(platform);
-
-        return true;
+        Game updatedGame = new Game(id, title, genre, platform, existingGame.isCompleted());
+        return repository.updateGame(updatedGame, dbPath);
     }
 
-    // Track completion (true or false).
+    // Mark a game as completed
     public Game trackCompletion(long id) {
-        Game game = repository.findGame(id);
+        Game game = repository.findGame(id, dbPath);
         if (game != null) {
             game.setCompleted(true);
+            repository.updateGame(game, dbPath);
         }
         return game;
     }
 
-    // Find game by ID.
+    // Find a game by ID
     public Game findGame(long id) {
-        return repository.findGame(id);
+        return repository.findGame(id, dbPath);
     }
 
-    // Loads games from a text file in the resources folder.
-    // Skips invalid lines or improperly formatted data.
+    /**
+     * Load games from a text file directly into the SQLite database.
+     * Each line must be in format: id,title,genre,platform,completed
+     */
     public int loadGamesFromFile(String fileName) {
         int count = 0;
         Scanner fileScanner = null;
 
         try {
-            // Load as a resource from the JAR
             var inputStream = App.class.getClassLoader().getResourceAsStream(fileName);
-
             if (inputStream == null) {
                 System.out.println("File not found in resources: " + fileName);
                 return 0;
@@ -108,12 +103,13 @@ import org.springframework.stereotype.Service;
                     String platform = parts[3].trim();
                     boolean completed = Boolean.parseBoolean(parts[4].trim());
 
+                    // Validate fields
                     if (title.isBlank() || !genre.matches("[a-zA-Z ]+") || platform.isBlank() || id <= 0) {
                         continue;
                     }
 
                     Game game = new Game(id, title, genre, platform, completed);
-                    if (repository.addGame(game)) count++;
+                    if (repository.addGame(game, dbPath)) count++;
 
                 } catch (Exception e) {
                     // skip invalid line
@@ -129,4 +125,3 @@ import org.springframework.stereotype.Service;
         return count;
     }
 }
-

@@ -1,7 +1,7 @@
 /**
  * Kaja Moore
  * CEN 3024C Software Development I
- * 03/30/2026
+ * 04/07/2026
  * VideoGameCollection.java
  *
  * Class Name: Phase 1
@@ -34,14 +34,24 @@ public class App {
     private Scanner scanner;
 
     public App() {
-        Gamerepository repository = new Gamerepository();
-        service = new GameService(repository);
         scanner = new Scanner(System.in);
 
-        // Load games from the text file
-        String fileName = "games.txt";
-        int loaded = service.loadGamesFromFile(fileName);
-        System.out.println(loaded + " games loaded from " + fileName);
+        // Ask user for the SQLite database path
+        System.out.println("Enter the SQLite database file path (e.g., games.db):");
+        String dbPath = scanner.nextLine().trim();
+
+        // Initialize repository and service
+        Gamerepository repository = new Gamerepository();
+        service = new GameService(repository, dbPath);
+
+        // Ask user if they want to load games from games.txt
+        System.out.println("Do you want to load initial games from games.txt? (yes/no):");
+        String loadFile = scanner.nextLine().trim();
+        if (loadFile.equalsIgnoreCase("yes")) {
+            String fileName = "games.txt";
+            int loaded = service.loadGamesFromFile(fileName);
+            System.out.println(loaded + " games loaded from " + fileName);
+        }
     }
 
     /* Method: main

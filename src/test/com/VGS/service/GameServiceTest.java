@@ -11,8 +11,9 @@ import static org.junit.Assert.*;
 
 public class GameServiceTest {
 
-    // The GameService instance I am testing
+    // The GameService instance I am testing + the DB Path
     private GameService service;
+    private final String testDbPath = "games.db";
 
     /* Setup method runs before each test.
      * Initializes a new repository and GameService for isolation between tests.
@@ -20,7 +21,7 @@ public class GameServiceTest {
     @Before
     public void setUp() {
         Gamerepository repository = new Gamerepository();
-        service = new GameService(repository);
+        service = new GameService(repository, testDbPath); // manually pass dbPath
     }
 
     /* Test adding a game to the service.
