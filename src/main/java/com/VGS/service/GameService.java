@@ -23,6 +23,7 @@ public class GameService {
     private final Gamerepository repository;
     private final String dbPath;
 
+    // Added dbPath in order for the database to connect smoothly through the GUI
     public GameService(Gamerepository repository, String dbPath) {
         this.repository = repository;
         this.dbPath = dbPath;
