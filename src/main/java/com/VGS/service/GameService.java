@@ -31,47 +31,77 @@ public class GameService {
 
     // Add a game to SQLite
     public boolean addGame(Game game) {
-        return repository.addGame(game, dbPath);
+        if (game == null || existsById(game.getId())) {
+            return false; // prevents null or duplicate ID
+        }
+        try {
+            return repository.addGame(game, dbPath);
+        } catch (Exception e) {
+            System.out.println("Add failed: " + e.getMessage());
+            return false;
+        }
     }
 
     // Remove a game by ID
     public boolean removeGame(long id) {
-        return repository.removeGame(id, dbPath);
+        try {
+            return repository.removeGame(id, dbPath);
+        } catch (Exception e) {
+            System.out.println("Remove failed: " + e.getMessage());
+            return false;
+        }
     }
 
     // View all games
     public List<Game> viewAllGames() {
-        return repository.getAllGames(dbPath);
+        try {
+            return repository.getAllGames(dbPath);
+        } catch (Exception e) {
+            System.out.println("Load failed: " + e.getMessage());
+            return List.of(); // empty list if error
+        }
     }
 
     // Check if a game exists by ID
     public boolean existsById(long id) {
-        return repository.getAllGames(dbPath).stream()
-                .anyMatch(game -> game.getId() == id);
+        return findGame(id) != null;
     }
 
     // Update a game by ID
     public boolean updateGame(long id, String title, String genre, String platform) {
-        Game existingGame = repository.findGame(id, dbPath);
-        if (existingGame == null) return false;
+        Game game = findGame(id);
+        if (game == null) return false; // game not found
 
-        Game updatedGame = new Game(id, title, genre, platform, existingGame.isCompleted());
-        return repository.updateGame(updatedGame, dbPath);
+        game.setTitle(title);
+        game.setGenre(genre);
+        game.setPlatform(platform);
+
+        try {
+            return repository.updateGame(game, dbPath);
+        } catch (Exception e) {
+            System.out.println("Update failed: " + e.getMessage());
+            return false;
+        }
     }
 
     // Mark a game as completed
     public Game trackCompletion(long id) {
-        Game game = repository.findGame(id, dbPath);
-        if (game != null) {
-            game.setCompleted(true);
-            repository.updateGame(game, dbPath);
-        }
-        return game;
+        Game game = findGame(id);
+        if (game == null) return null;
+
+        game.setCompleted(true);
+        boolean updated = updateGame(game.getId(), game.getTitle(), game.getGenre(), game.getPlatform());
+        return updated ? game : null;
     }
 
     // Find a game by ID
     public Game findGame(long id) {
-        return repository.findGame(id, dbPath);
+        try {
+            return repository.findGame(id, dbPath);
+        } catch (Exception e) {
+            System.out.println("Find failed: " + e.getMessage());
+            return null;
+        }
     }
 
     /* Load games from a text file directly into the SQLite database.

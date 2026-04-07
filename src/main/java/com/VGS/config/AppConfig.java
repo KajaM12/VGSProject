@@ -3,6 +3,7 @@ package com.VGS.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.sql.Connection;
 import java.util.Scanner;
 
 @Configuration
@@ -14,7 +15,25 @@ public class AppConfig {
     @Bean
     public String dbPath() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter SQLite database file path:");
-        return scanner.nextLine();
+        while (true) {
+            System.out.println("Enter SQLite database file path:");
+            String input = scanner.nextLine().trim();
+
+            // Blank check
+            if (input.isEmpty()) {
+                System.out.println("Path cannot be blank. Try again.");
+                continue;
+            }
+
+            //  Try connecting
+            try (Connection conn = DatabaseConnection.connect(input)) {
+                if (conn != null) {
+                    System.out.println("Database connected successfully!");
+                    return input;
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid database path. Try again.");
+            }
+        }
     }
 }

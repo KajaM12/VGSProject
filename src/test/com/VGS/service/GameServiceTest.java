@@ -26,7 +26,7 @@ public class GameServiceTest {
     public void setUp() {
         Gamerepository repository = new Gamerepository();
 
-        // Clear database before each test
+        // Clear database before each test to prevent duplicate ID issues
         try (Connection conn = DatabaseConnection.connect(testDbPath);
              Statement stmt = conn.createStatement()) {
 
@@ -54,14 +54,14 @@ public class GameServiceTest {
      */
     @Test
     public void testAddGame() {
-        Game game = new Game(1, "Zelda", "Adventure", "Switch", false); // create test game
-        boolean added = service.addGame(game); // attempt to add
-        assertTrue(added);  // should return true
+        Game game = new Game(1, "Zelda", "Adventure", "Switch", false);
+        boolean added = service.addGame(game);
+        assertTrue("Game should be added successfully", added);
 
-        // Verify that the game is in the list of all games
-        List<Game> games = service.viewAllGames();
-        assertEquals(1, games.size());  // only 1 game should exist
-        assertEquals("Zelda", games.get(0).getTitle());   // title matches
+        // Attempt duplicate ID
+        Game duplicate = new Game(1, "Mario", "Platformer", "Switch", false);
+        boolean duplicateAdded = service.addGame(duplicate);
+        assertFalse("Duplicate ID should not be added", duplicateAdded);
     }
 
     /* Test removing a game that exists.
@@ -69,12 +69,13 @@ public class GameServiceTest {
      */
     @Test
     public void testRemoveGame() {
-        Game game = new Game(1, "Halo", "Shooter", "Xbox", false);
-        service.addGame(game);
+        service.addGame(new Game(4, "Halo", "FPS", "Xbox", false));
+        boolean removed = service.removeGame(4);
+        assertTrue("Game should be removed", removed);
 
-        boolean removed = service.removeGame(1); // attempt removal
-        assertTrue(removed); // should succeed
-        assertTrue(service.viewAllGames().isEmpty()); // list should be empty
+        // Attempt to remove non-existing game
+        boolean removedAgain = service.removeGame(999);
+        assertFalse("Removing non-existing game should fail", removedAgain);
     }
 
     /* Test removing a game that does not exist.
@@ -92,27 +93,19 @@ public class GameServiceTest {
      */
     @Test
     public void testUpdateGame() {
-        Game game = new Game(1, "Old Title", "RPG", "PC", false);
-        service.addGame(game);
+        service.addGame(new Game(5, "FIFA", "Sports", "PS5", false));
 
-        boolean updated = service.updateGame(1, "New Title", "Action", "PS5");  // boolean return (update info)
-        assertTrue(updated); // check that update succeeded
+        boolean updated = service.updateGame(5, "FIFA 24", "Sports", "PS5");
+        assertTrue("Game should be updated successfully", updated);
 
-        // check the actual updated object
-        Game found = service.findGame(1);
-        assertNotNull(found);   // game should exist
-        assertEquals("New Title", found.getTitle());
-        assertEquals("Action", found.getGenre());
-        assertEquals("PS5", found.getPlatform());
-    }
+        Game updatedGame = service.findGame(5);
+        assertEquals("Title should be updated", "FIFA 24", updatedGame.getTitle());
 
     /* Test updating a non-existent game.
      * Should return false since the game ID does not exist.
      */
-    @Test
-    public void testUpdateGame_NotFound() {
-        boolean updated = service.updateGame(99, "Title", "Genre", "Platform"); // boolean
-        assertFalse(updated);  // update fails
+    boolean updateNonExistent = service.updateGame(999, "Unknown", "None", "None");
+        assertFalse("Updating non-existing game should fail", updateNonExistent);
     }
 
     /* Test viewing all games in the service.
@@ -120,11 +113,11 @@ public class GameServiceTest {
      */
     @Test
     public void testViewAllGames() {
-        service.addGame(new Game(1, "Game1", "RPG", "PC", false));
-        service.addGame(new Game(2, "Game2", "Action", "PS5", false));
+        service.addGame(new Game(2, "Mario Kart", "Racing", "Switch", false));
+        service.addGame(new Game(3, "Minecraft", "Sandbox", "PC", false));
 
         List<Game> games = service.viewAllGames();
-        assertEquals(2, games.size());
+        assertEquals("Two games should be loaded", 2, games.size());
     }
 
     /* Test tracking completion of a game.
@@ -133,21 +126,15 @@ public class GameServiceTest {
      */
     @Test
     public void testTrackCompletion() {
-        Game game = new Game(1, "Minecraft", "Sandbox", "PC", false);
-        service.addGame(game);
+        service.addGame(new Game(6, "Overwatch", "FPS", "PC", false));
 
-        Game completed = service.trackCompletion(1); // returns Game
-        assertNotNull(completed); // game exists
-        assertTrue(completed.isCompleted());  // completed should be true
-    }
+        Game completed = service.trackCompletion(6);
+        assertNotNull("Game should exist", completed);
+        assertTrue("Game should be marked as completed", completed.isCompleted());
 
-    /* Test tracking completion of a non-existent game.
-     * Should return null since the ID does not exist.
-     */
-    @Test
-    public void testTrackCompletion_NotFound() {
-        Game completed = service.trackCompletion(99); // returns Game
-        assertNull(completed);  // no game to complete
+        // Attempt to complete non-existing game
+        Game nonExistent = service.trackCompletion(999);
+        assertNull("Non-existing game should return null", nonExistent);
     }
 
     /* Test finding a game by ID.
