@@ -90,17 +90,20 @@ public class Gamerepository {
         return games;
     }
 
-    // In Gamerepository.java
+    // Updates games in the repository
     public boolean updateGame(Game game, String dbPath) {
         String sql = "UPDATE games SET title = ?, genre = ?, platform = ?, completed = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.connect(dbPath);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, game.getTitle());
             stmt.setString(2, game.getGenre());
             stmt.setString(3, game.getPlatform());
             stmt.setBoolean(4, game.isCompleted());
             stmt.setLong(5, game.getId());
+
             return stmt.executeUpdate() > 0;
+
         } catch (SQLException e) {
             System.out.println("Update failed: " + e.getMessage());
             return false;

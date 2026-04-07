@@ -86,12 +86,23 @@ public class GameService {
 
     // Mark a game as completed
     public Game trackCompletion(long id) {
-        Game game = findGame(id);
-        if (game == null) return null;
+        // Find the game in the database
+        Game game = repository.findGame(id, dbPath);
 
-        game.setCompleted(true);
-        boolean updated = updateGame(game.getId(), game.getTitle(), game.getGenre(), game.getPlatform());
-        return updated ? game : null;
+        if (game != null) {
+            // Mark as completed
+            game.setCompleted(true);
+
+            // Update the database row
+            boolean updated = repository.updateGame(game, dbPath);
+
+            if (updated) {
+                return game; // Return updated game
+            } else {
+                System.out.println("Failed to update game completion in DB for ID: " + id);
+            }
+        }
+        return null; // game not found or DB update failed
     }
 
     // Find a game by ID
