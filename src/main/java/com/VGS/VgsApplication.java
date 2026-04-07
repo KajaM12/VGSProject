@@ -13,9 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 public class VgsApplication {
 
+    // To make sure our database runs through the application
     public static void main(String[] args) {
-        String dbPath = "games.db"; // Can be configured in application.properties
-        DatabaseInitializer.initialize(dbPath);
         SpringApplication.run(VgsApplication.class, args);
     }
 }

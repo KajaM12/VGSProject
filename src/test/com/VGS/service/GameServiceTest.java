@@ -4,11 +4,15 @@ import com.VGS.model.Game;
 import com.VGS.repository.Gamerepository;
 import org.junit.Before;
 import org.junit.Test;
+import java.sql.Connection;
+import java.sql.Statement;
+import com.VGS.config.DatabaseConnection;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 
+//Updated our GameServiceTest to make sure the GameService class runs correctly.
 public class GameServiceTest {
 
     // The GameService instance I am testing + the DB Path
@@ -21,7 +25,28 @@ public class GameServiceTest {
     @Before
     public void setUp() {
         Gamerepository repository = new Gamerepository();
-        service = new GameService(repository, testDbPath); // manually pass dbPath
+
+        // Clear database before each test
+        try (Connection conn = DatabaseConnection.connect(testDbPath);
+             Statement stmt = conn.createStatement()) {
+
+            stmt.execute("""
+            CREATE TABLE IF NOT EXISTS games (
+                id INTEGER PRIMARY KEY,
+                title TEXT NOT NULL,
+                genre TEXT NOT NULL,
+                platform TEXT NOT NULL,
+                completed BOOLEAN
+            );
+        """);
+
+            stmt.execute("DELETE FROM games");
+
+        } catch (Exception e) {
+            System.out.println("Failed to reset DB: " + e.getMessage());
+        }
+
+        service = new GameService(repository, testDbPath);
     }
 
     /* Test adding a game to the service.

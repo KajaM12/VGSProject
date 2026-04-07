@@ -4,7 +4,7 @@
  * 04/07/2026
  * VideoGameCollection.java
  *
- * Class Name: Phase 1
+ * Class Name: Phase 4
  *
  * The Video Game Collection System allows users to manage their personal video game library.
  * It enables adding, removing, updating, viewing, and tracking completion of games, while
@@ -37,7 +37,7 @@ public class App {
         scanner = new Scanner(System.in);
 
         // Ask user for the SQLite database path
-        System.out.println("Enter the SQLite database file path (e.g., games.db):");
+        System.out.println("Enter the SQLite database file path:");
         String dbPath = scanner.nextLine().trim();
 
         // Initialize repository and service

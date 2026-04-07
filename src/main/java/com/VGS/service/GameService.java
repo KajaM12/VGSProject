@@ -74,11 +74,17 @@ public class GameService {
         return repository.findGame(id, dbPath);
     }
 
-    /**
-     * Load games from a text file directly into the SQLite database.
+    /* Load games from a text file directly into the SQLite database.
      * Each line must be in format: id,title,genre,platform,completed
      */
     public int loadGamesFromFile(String fileName) {
+
+        // Updated*** to check if DB already has data
+        if (!repository.getAllGames(dbPath).isEmpty()) {
+            System.out.println("Database already contains data. Skipping file load.");
+            return 0;
+        }
+
         int count = 0;
         Scanner fileScanner = null;
 
@@ -104,16 +110,12 @@ public class GameService {
                     String platform = parts[3].trim();
                     boolean completed = Boolean.parseBoolean(parts[4].trim());
 
-                    // Validate fields
-                    if (title.isBlank() || !genre.matches("[a-zA-Z ]+") || platform.isBlank() || id <= 0) {
-                        continue;
-                    }
-
                     Game game = new Game(id, title, genre, platform, completed);
+
                     if (repository.addGame(game, dbPath)) count++;
 
                 } catch (Exception e) {
-                    // skip invalid line
+                    // skip bad line
                 }
             }
 
