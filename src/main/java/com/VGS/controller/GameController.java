@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-
 @Controller
 // Marks this class as a Spring controller. It will handle web requests.
 public class GameController {
@@ -20,12 +19,9 @@ public class GameController {
 
     // View all games (Main Menu)
     @GetMapping("/")
-    // Maps HTTP GET requests for "/" (root) to this method.
     public String viewGames(Model model) {
-        // Passes the list of all games to the view (index.html) using the Model.
         model.addAttribute("games", service.viewAllGames());
         return "index";
-        // Returns the name of the Thymeleaf template to render (index.html).
     }
 
     // Shows add game form
@@ -36,7 +32,6 @@ public class GameController {
 
     // Adds game
     @PostMapping("/add")
-    // Handles the form with adding a new game.
     public String addGame(@RequestParam String id,
                           @RequestParam String title,
                           @RequestParam String genre,
@@ -45,7 +40,6 @@ public class GameController {
 
         long gameId;
 
-        // Validates ID: numeric and must be between 1-10 digits
         if (!id.matches("\\d{1,10}")) {
             model.addAttribute("errorMessage", "ID must be numeric and 1-10 digits.");
             model.addAttribute("games", service.viewAllGames());
@@ -60,35 +54,30 @@ public class GameController {
             return "index";
         }
 
-        // Checks for duplicate IDs
         if (service.existsById(gameId)) {
             model.addAttribute("errorMessage", "ID already exists.");
             model.addAttribute("games", service.viewAllGames());
             return "index";
         }
 
-        // Validate genre: letters only
         if (!genre.matches("[a-zA-Z\\s]+")) {
             model.addAttribute("errorMessage", "Genre must contain letters only.");
             model.addAttribute("games", service.viewAllGames());
             return "index";
         }
 
-        // Validate title
         if (title.isBlank()) {
             model.addAttribute("errorMessage", "Title is required.");
             model.addAttribute("games", service.viewAllGames());
             return "index";
         }
 
-        // Validate platform
         if (platform.isBlank()) {
             model.addAttribute("errorMessage", "Platform is required.");
             model.addAttribute("games", service.viewAllGames());
             return "index";
         }
 
-        // All validations passed, create a new Game object
         Game game = new Game(gameId, title, genre, platform, false);
         service.addGame(game);
 
@@ -97,70 +86,70 @@ public class GameController {
         return "index";
     }
 
-    // Removes game
-    @GetMapping("/delete/{id}")
-    public String deleteGame(@PathVariable String id, Model model) {
-        long gameId;
-        try {
-            gameId = Long.parseLong(id); // convert string to long
-        } catch (NumberFormatException e) {
-            model.addAttribute("errorMessage", "Invalid ID.");
+    // DELETE (Selection-Based)
+    @PostMapping("/delete")
+    public String deleteGame(@RequestParam(required = false) Long selectedId, Model model) {
+
+        if (selectedId == null) {
+            model.addAttribute("errorMessage", "Please select a game to delete.");
             model.addAttribute("games", service.viewAllGames());
             return "index";
         }
 
-        boolean removed = service.removeGame(gameId); // attempt to remove game
+        boolean removed = service.removeGame(selectedId);
+
         if (!removed) {
             model.addAttribute("errorMessage", "Game not found.");
         } else {
             model.addAttribute("successMessage", "Game deleted successfully!");
         }
 
-        model.addAttribute("games", service.viewAllGames()); // refresh main menu
+        model.addAttribute("games", service.viewAllGames());
         return "index";
     }
 
-    // Marks complete
-    @GetMapping("/complete/{id}")
-    public String completeGame(@PathVariable String id, Model model) {
-        long gameId;
-        try {
-            gameId = Long.parseLong(id);
-        } catch (NumberFormatException e) {
-            model.addAttribute("errorMessage", "Invalid game ID: " + id);
+    // COMPLETE (Selection-Based)
+    @PostMapping("/complete")
+    public String completeGame(@RequestParam(required = false) Long selectedId, Model model) {
+
+        if (selectedId == null) {
+            model.addAttribute("errorMessage", "Please select a game to mark complete.");
             model.addAttribute("games", service.viewAllGames());
             return "index";
         }
 
-        Game completedGame = service.trackCompletion(gameId); // mark as completed
+        Game completedGame = service.trackCompletion(selectedId);
+
         if (completedGame == null) {
-            model.addAttribute("errorMessage", "Game with ID " + id + " not found.");
+            model.addAttribute("errorMessage", "Game not found.");
         } else {
             model.addAttribute("successMessage", "Game marked as completed!");
         }
 
-        model.addAttribute("games", service.viewAllGames()); // refresh main menu
+        model.addAttribute("games", service.viewAllGames());
         return "index";
     }
 
-    // Show update form
-    @GetMapping("/update/{id}")
-    public String showUpdateForm(@PathVariable String id, Model model) {
-        try {
-            long gameId = Long.parseLong(id);
-            Game game = service.findGame(gameId);
-            if (game == null) {
-                model.addAttribute("errorMessage", "Game with ID " + id + " not found.");
-                model.addAttribute("games", service.viewAllGames());
-                return "index";
-            }
-            model.addAttribute("game", game); // pre-fill form
-            return "update-game"; // update-game.html
-        } catch (NumberFormatException e) {
-            model.addAttribute("errorMessage", "Invalid game ID: " + id);
+    // SHOW UPDATE FORM (Selection-Based)
+    @PostMapping("/show-update")
+    public String showUpdateForm(@RequestParam(required = false) Long selectedId, Model model) {
+
+        if (selectedId == null) {
+            model.addAttribute("errorMessage", "Please select a game to update.");
             model.addAttribute("games", service.viewAllGames());
             return "index";
         }
+
+        Game game = service.findGame(selectedId);
+
+        if (game == null) {
+            model.addAttribute("errorMessage", "Game not found.");
+            model.addAttribute("games", service.viewAllGames());
+            return "index";
+        }
+
+        model.addAttribute("game", game);
+        return "update-game";
     }
 
     // Handle update POST
@@ -169,27 +158,25 @@ public class GameController {
                              @RequestParam String title,
                              @RequestParam String genre,
                              @RequestParam String platform,
+                             @RequestParam(required = false) String completed,
                              Model model) {
 
-        // Validate fields
-        if (title.isBlank() || genre.isBlank() || platform.isBlank()) {
-            model.addAttribute("errorMessage", "All fields are required.");
-            model.addAttribute("game", service.findGame(id));
-            return "update-game";
+        boolean isCompleted = (completed != null);
+
+        Game existing = service.findGame(id);
+        if (existing == null) {
+            model.addAttribute("errorMessage", "Game not found.");
+            return "index";
         }
 
-        if (!genre.matches("[a-zA-Z\\s]+")) {
-            model.addAttribute("errorMessage", "Genre must contain letters only.");
-            model.addAttribute("game", service.findGame(id));
-            return "update-game";
-        }
+        Game updatedGame = new Game(id, title, genre, platform, isCompleted);
 
         boolean updated = service.updateGame(id, title, genre, platform);
 
         if (updated) {
             model.addAttribute("successMessage", "Game updated successfully!");
         } else {
-            model.addAttribute("errorMessage", "Game not found.");
+            model.addAttribute("errorMessage", "Update failed.");
         }
 
         model.addAttribute("games", service.viewAllGames());
@@ -199,7 +186,7 @@ public class GameController {
     // Exits the page
     @GetMapping("/exit")
     public String exitPage() {
-        return "exit"; // It will return exit.html
+        return "exit";
     }
 }
 

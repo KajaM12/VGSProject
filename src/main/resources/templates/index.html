@@ -56,6 +56,10 @@
             background-color: #2e2e2e;
         }
 
+        .selected-row {
+            background-color: #333 !important;
+        }
+
         .alert {
             padding: 10px;
             margin-bottom: 15px;
@@ -73,46 +77,37 @@
             color: #000000;
         }
 
-        .add-btn {
+        .btn {
             display: inline-block;
-            background-color: #a020f0;
-            color: #ffffff;
             border: none;
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            text-decoration: none;
-            margin-bottom: 15px;
+            margin-right: 10px;
         }
 
-        .add-btn:hover {
-            background-color: #00ff00;
-            color: #000000;
+        .add-btn {
+            background-color: #a020f0;
+            color: #ffffff;
         }
 
-        .action-link {
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-        }
-
-        .action-link.delete {
+        .delete-btn {
             background-color: #ff4d6d;
             color: #fff;
         }
 
-        .action-link.complete {
-            background-color: #00ff7f;
-            color: #000;
-        }
-
-        .action-link.update {
+        .update-btn {
             background-color: #a020f0;
             color: #fff;
         }
 
-        .action-link:hover {
+        .complete-btn {
+            background-color: #00ff7f;
+            color: #000;
+        }
+
+        .btn:hover {
             opacity: 0.8;
         }
     </style>
@@ -125,44 +120,70 @@
 <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
 
-<!-- Add game link -->
-<a href="/add" class="add-btn">Add Game</a>
+<!-- Add game -->
+<a href="/add" class="btn add-btn">Add Game</a>
 
-<!-- Empty database message -->
-<p th:if="${#lists.isEmpty(games)}">No games found in the database.</p>
+<!-- Form wraps table + buttons -->
+<form method="post">
 
-<!-- Game table -->
-<table th:if="${!#lists.isEmpty(games)}">
-    <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Genre</th>
-        <th>Platform</th>
-        <th>Completed</th>
-        <th>Actions</th>
-    </tr>
+    <!-- Action Buttons -->
+    <div style="margin-top:15px;">
+        <button type="submit" formaction="/delete" class="btn delete-btn"
+                onclick="return confirm('Delete selected game?')">Delete</button>
 
-    <tr th:each="game : ${games}">
-        <td th:text="${game.id}"></td>
-        <td th:text="${game.title}"></td>
-        <td th:text="${game.genre}"></td>
-        <td th:text="${game.platform}"></td>
-        <td>
-            <span th:if="${game.completed}" style="color:#00ff00;">Completed</span>
-            <span th:unless="${game.completed}" style="color:#ff4d6d;">Not Completed</span>
-        </td>
-        <td>
-            <a th:href="@{/delete/{id}(id=${game.id})}" class="action-link delete"
-               onclick="return confirm('Are you sure you want to delete this game?');">Delete</a>
-            <a th:href="@{/complete/{id}(id=${game.id})}" class="action-link complete">Complete</a>
-            <a th:href="@{/update/{id}(id=${game.id})}" class="action-link update">Update</a>
-        </td>
-    </tr>
+        <button type="submit" formaction="/show-update" class="btn update-btn">Update</button>
 
-</table>
+        <button type="submit" formaction="/complete" class="btn complete-btn">Mark Complete</button>
+    </div>
 
-<!-- Exit button -->
-<a href="/exit" class="add-btn" style="background-color:#ff0000;">Exit</a>
+    <!-- Empty message -->
+    <p th:if="${#lists.isEmpty(games)}">No games found in the database.</p>
+
+    <!-- Game table -->
+    <table th:if="${!#lists.isEmpty(games)}">
+        <tr>
+            <th>Select</th>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Genre</th>
+            <th>Platform</th>
+            <th>Completed</th>
+        </tr>
+
+        <tr th:each="game : ${games}" onclick="selectRow(this)">
+            <td>
+                <input type="radio" name="selectedId" th:value="${game.id}">
+            </td>
+            <td th:text="${game.id}"></td>
+            <td th:text="${game.title}"></td>
+            <td th:text="${game.genre}"></td>
+            <td th:text="${game.platform}"></td>
+            <td>
+                <span th:if="${game.completed}" style="color:#00ff00;">Completed</span>
+                <span th:unless="${game.completed}" style="color:#ff4d6d;">Not Completed</span>
+            </td>
+        </tr>
+    </table>
+
+</form>
+
+<!-- Exit -->
+<a href="/exit" class="btn" style="background-color:#ff0000;">Exit</a>
+
+<!-- Row selection highlight -->
+<script>
+    function selectRow(row) {
+        // Remove highlight from all rows
+        document.querySelectorAll("tr").forEach(r => r.classList.remove("selected-row"));
+
+        // Highlight clicked row
+        row.classList.add("selected-row");
+
+        // Select radio button inside row
+        const radio = row.querySelector("input[type='radio']");
+        if (radio) radio.checked = true;
+    }
+</script>
 
 </body>
 </html>
