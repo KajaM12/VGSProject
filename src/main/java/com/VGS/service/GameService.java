@@ -57,6 +57,21 @@ public class GameService {
     }
 
     /**
+     * Updates the entire game including completion status.
+     *
+     * @param game The updated game object
+     * @return true if update was successful, false otherwise
+     */
+    public boolean updateFullGame(Game game) {
+        try {
+            return repository.updateGame(game, dbPath);
+        } catch (Exception e) {
+            System.out.println("Full update failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Removes a game from the database by ID.
      *
      * @param id The ID of the game to remove.

@@ -161,17 +161,21 @@ public class GameController {
                              @RequestParam(required = false) String completed,
                              Model model) {
 
+        // Checkbox logic: checked = true, unchecked = false
         boolean isCompleted = (completed != null);
 
         Game existing = service.findGame(id);
         if (existing == null) {
             model.addAttribute("errorMessage", "Game not found.");
+            model.addAttribute("games", service.viewAllGames());
             return "index";
         }
 
+        // Creating a FULL updated object (including completed status)
         Game updatedGame = new Game(id, title, genre, platform, isCompleted);
 
-        boolean updated = service.updateGame(id, title, genre, platform);
+        // Calling repository THROUGH service (new method needed)
+        boolean updated = service.updateFullGame(updatedGame);
 
         if (updated) {
             model.addAttribute("successMessage", "Game updated successfully!");

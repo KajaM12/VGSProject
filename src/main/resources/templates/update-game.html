@@ -112,8 +112,9 @@
     <input type="text" id="platform" name="platform" th:value="${game.platform}" required>
 
     <!-- Completion -->
-    <label class="checkbox">
-        <input type="checkbox" name="completed" th:checked="${game.completed}">
+    <label>
+        <input type="checkbox" name="completed"
+               th:checked="${game.completed}">
         Completed
     </label>
 

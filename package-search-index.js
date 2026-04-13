@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.VGS"},{"l":"com.VGS.config"},{"l":"com.VGS.controller"},{"l":"com.VGS.model"},{"l":"com.VGS.repository"},{"l":"com.VGS.service"}];updateSearchResults();
