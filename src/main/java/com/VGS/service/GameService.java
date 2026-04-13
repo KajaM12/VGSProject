@@ -8,10 +8,11 @@ import java.io.File;
 import java.util.List;
 import java.util.Scanner;
 
-/* Provides the business logic for the Video Game Collection System.
+/**
+ * Provides the business logic for the Video Game Collection System.
  * Acts as a service layer between the user interface (App) and the repository (Gamerepository).
  * Handles adding, removing, updating, viewing, and marking games as completed.
- * Also loads games safely from a text file.
+ * Also loads games safely from a text file into the SQLite database.
  */
 
 import org.springframework.beans.factory.annotation.Value;
@@ -23,12 +24,25 @@ public class GameService {
     private final Gamerepository repository;
     private final String dbPath;
 
+    /**
+     * Constructor for GameService.
+     *
+     * @param repository The repository used for database operations.
+     * @param dbPath The file path to the SQLite database.
+     */
     // Added dbPath in order for the database to connect smoothly through the GUI
     public GameService(Gamerepository repository, String dbPath) {
         this.repository = repository;
         this.dbPath = dbPath;
     }
 
+    /**
+     * Adds a new game to the database.
+     * Prevents adding null games or duplicate IDs.
+     *
+     * @param game The Game object to add.
+     * @return true if added successfully, false otherwise.
+     */
     // Add a game to SQLite
     public boolean addGame(Game game) {
         if (game == null || existsById(game.getId())) {
@@ -42,6 +56,12 @@ public class GameService {
         }
     }
 
+    /**
+     * Removes a game from the database by ID.
+     *
+     * @param id The ID of the game to remove.
+     * @return true if removed successfully, false otherwise.
+     */
     // Remove a game by ID
     public boolean removeGame(long id) {
         try {
@@ -52,7 +72,11 @@ public class GameService {
         }
     }
 
-    // View all games
+    /**
+     * Retrieves all games from the database.
+     *
+     * @return A list of all Game objects, or an empty list if an error occurs.
+     */
     public List<Game> viewAllGames() {
         try {
             return repository.getAllGames(dbPath);
@@ -62,12 +86,25 @@ public class GameService {
         }
     }
 
-    // Check if a game exists by ID
+    /**
+     * Checks if a game exists in the database by ID.
+     *
+     * @param id The ID to check.
+     * @return true if the game exists, false otherwise.
+     */
     public boolean existsById(long id) {
         return findGame(id) != null;
     }
 
-    // Update a game by ID
+    /**
+     * Updates an existing game's details.
+     *
+     * @param id The ID of the game to update.
+     * @param title The new title.
+     * @param genre The new genre.
+     * @param platform The new platform.
+     * @return true if update was successful, false if game not found or error occurs.
+     */
     public boolean updateGame(long id, String title, String genre, String platform) {
         Game game = findGame(id);
         if (game == null) return false; // game not found
@@ -84,7 +121,12 @@ public class GameService {
         }
     }
 
-    // Mark a game as completed
+    /**
+     * Marks a game as completed in the database.
+     *
+     * @param id The ID of the game to mark as completed.
+     * @return The updated Game object if successful, null otherwise.
+     */
     public Game trackCompletion(long id) {
         // Find the game in the database
         Game game = repository.findGame(id, dbPath);
@@ -105,7 +147,12 @@ public class GameService {
         return null; // game not found or DB update failed
     }
 
-    // Find a game by ID
+    /**
+     * Finds a game by its ID.
+     *
+     * @param id The ID of the game.
+     * @return The Game object if found, null otherwise.
+     */
     public Game findGame(long id) {
         try {
             return repository.findGame(id, dbPath);
@@ -115,8 +162,14 @@ public class GameService {
         }
     }
 
-    /* Load games from a text file directly into the SQLite database.
-     * Each line must be in format: id,title,genre,platform,completed
+    /**
+     * Loads games from a text file into the SQLite database.
+     * Skips invalid lines and prevents duplicate loading if database already contains data.
+     *
+     * File format: id,title,genre,platform,completed
+     *
+     * @param fileName The name of the file located in resources.
+     * @return The number of games successfully loaded.
      */
     public int loadGamesFromFile(String fileName) {
 

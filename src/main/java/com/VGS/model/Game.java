@@ -7,17 +7,19 @@ public class Game {
     private String platform;
     private boolean completed;
 
-    /* Constructor: Game
+    /**
+     * Constructs a new Game object with the given attributes.
+     * Validates input to ensure:
+     * - ID is positive
+     * - Title and platform are not null or blank
+     * - Genre contains only letters
      *
-     * Creates a new Game object with the given attributes.
-     * Validates input to ensure ID is positive, title and platform
-     * are not blank, and genre contains only letters.
-     *
-     *  - long id: Unique identifier for the game (must be positive)
-     *  - String title: Name of the game (cannot be null or blank)
-     *  - String genre: Game genre (letters only)
-     *  - String platform: Platform for the game (cannot be null or blank)
-     *  - boolean completed: Whether the game has been completed
+     * @param id Unique identifier for the game (must be positive)
+     * @param title Name of the game (cannot be null or blank)
+     * @param genre Game genre (letters only)
+     * @param platform Platform for the game (cannot be null or blank)
+     * @param completed Whether the game has been completed
+     * @throws IllegalArgumentException if any input is invalid
      */
     public Game(long id, String title, String genre, String platform, boolean completed) {
         if (id <= 0) throw new IllegalArgumentException("ID must be a positive number.");
@@ -33,27 +35,31 @@ public class Game {
         this.completed = completed;
     }
 
-    // Getters
+    /**
+     * Gets the game ID, Title, Genre, Platform, and check if the game is completed.
+     *
+     * @return the game ID, Title, Genre, Platform, and return true if completed, false otherwise.
+     */
     public long getId() { return id; }
     public String getTitle() { return title; }
     public String getGenre() { return genre; }
     public String getPlatform() { return platform; }
     public boolean isCompleted() { return completed; }
 
-    /* Method: setTitle
+    /**
+     * Updates the title of the game if valid.
      *
-     * Updates the title of the game if the new title is valid.
-     *  - String title: New title for the game (cannot be null or blank)
+     * @param title New title (cannot be null or blank)
      */
     public void setTitle(String title) {
         if (title != null && !title.isBlank()) this.title = title.trim();
     }
 
-    /* Method: setGenre
+    /**
+     * Updates the genre of the game if valid.
+     * Only allows letters and spaces.
      *
-     * Updates the genre of the game if the new genre is valid.
-     * Prints an error message if the genre contains invalid characters.
-     *  - String genre: New genre (letters only)
+     * @param genre New genre (letters only)
      */
     public void setGenre(String genre) {
         if (genre != null && !genre.isBlank() && genre.matches("[a-zA-Z ]+"))
@@ -62,30 +68,28 @@ public class Game {
             System.out.println("Invalid genre. Only letters allowed.");
     }
 
-    /* Method: setPlatform
+    /**
+     * Updates the platform of the game if valid.
      *
-     * Updates the platform of the game if the new value is valid.
-     *  - String platform: New platform (cannot be null or blank)
+     * @param platform New platform (cannot be null or blank)
      */
     public void setPlatform(String platform) {
         if (platform != null && !platform.isBlank()) this.platform = platform.trim();
     }
 
-    /* Method: setCompleted
-     *
+    /**
      * Updates the completion status of the game.
-     *  - boolean completed: True if the game is completed, false otherwise
+     *
+     * @param completed true if completed, false otherwise
      */
     public void setCompleted(boolean completed) {
         this.completed = completed;
     }
 
-    /* Method: toString
+    /**
+     * Returns a formatted string containing all game details.
      *
-     * Returns a formatted string containing all the game information.
-     *
-     * Arguments: none
-     * Return: String - formatted game details
+     * @return formatted string representation of the game
      */
     @Override
     public String toString() {

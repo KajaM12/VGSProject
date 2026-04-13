@@ -1,7 +1,7 @@
 /**
  * Kaja Moore
  * CEN 3024C Software Development I
- * 04/07/2026
+ * 04/13/2026
  * VideoGameCollection.java
  *
  * Class Name: Phase 4
@@ -23,15 +23,23 @@ import com.VGS.service.GameService;
 import java.util.List;
 import java.util.Scanner;
 
-/* Constructor: App
+/**
+ * Video Game Collection System (Console Application)
  *
- * Initializes the GameService and Scanner for user input.
- * Loads the games from a text file into the collection.
+ * This class serves as the main user interface for the application.
+ * It handles user input, menu navigation, and interaction with the service layer.
+ * The user can manage a collection of video games stored in a SQLite database.
  */
 public class App {
 
     private GameService service;
     private Scanner scanner;
+
+    /* Constructor: App
+     *
+     * Initializes the GameService and Scanner for user input.
+     * Loads the games from a text file into the collection.
+     */
 
     public App() {
         scanner = new Scanner(System.in);
@@ -54,23 +62,25 @@ public class App {
         }
     }
 
-    /* Method: main
+    /**
+     * Main entry point of the application.
      *
-     * The main program of the application.
-     * Creates an instance of the App and starts the program loop.
+     * Creates an instance of App and starts the program loop.
+     *
+     * @param args command-line arguments (not used)
      */
     public static void main(String[] args) {
         App app = new App();
         app.run();
     }
 
-    /* Method: run
+    /**
+     * Runs the main program loop.
      *
-     * Handles the main program loop for the user interface.
-     * Displays the menu, gets user input, and calls the
-     * appropriate methods based on the option selected.
+     * Displays the menu, processes user input, and calls the appropriate
+     * methods based on the selected option.
      *
-     * it will return: boolean - returns whether the program is still running
+     * @return true if the program ran successfully
      */
     public boolean run() {
 
@@ -115,11 +125,11 @@ public class App {
         return running;
     }
 
-    /* Method: addGame
+    /**
+     * Adds a new game to the collection.
      *
-     * Adds a new game to the collection. Validates the game ID,
-     * title, genre, and platform before adding. Ensures no duplicate IDs.
-     *
+     * Prompts the user for game details (ID, title, genre, platform),
+     * validates the input, and ensures no duplicate IDs exist before adding.
      */
     private void addGame() {
 
@@ -172,11 +182,10 @@ public class App {
             System.out.println("Game added successfully!");
     }
 
-    /* Method: removeGame
-     *
+    /**
      * Removes a game from the collection by its ID.
-     * Handles invalid or non-existing IDs carefully.
      *
+     * Handles invalid input and cases where the game does not exist.
      */
     private void removeGame() {
         try {
@@ -194,11 +203,11 @@ public class App {
         }
     }
 
-    /* Method: updateGame
+    /**
+     * Updates an existing game.
      *
-     * Updates the details of an existing game, including title,
-     * genre, and platform. Validates the input before updating.
-     *
+     * Allows the user to modify title, genre, platform, or completion status.
+     * Includes validation and handles cases where the game is not found.
      */
     private void updateGame() {
         try {
@@ -280,9 +289,10 @@ public class App {
         }
     }
 
-    /* Method: viewGames
-     *
+    /**
      * Displays all games currently stored in the collection.
+     *
+     * If no games exist, a message is shown to the user.
      */
     private void viewGames() {
         List<Game> games = service.viewAllGames();
@@ -293,7 +303,7 @@ public class App {
         for (Game game : games) System.out.println(game);
     }
 
-    /* Method: trackCompletion (Custom Main Method)
+    /** Method: trackCompletion (Custom Main Method)
      *
      * Marks a game as completed based on its ID.
      * Validates input and handles non-existent games.
